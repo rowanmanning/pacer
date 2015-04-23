@@ -1,0 +1,37 @@
+{
+    "name": "pacer",
+    "version": "0.0.0",
+
+    "description": "Rate limit things",
+    "keywords": [ "limit", "pace", "rate" ],
+    "author": "Rowan Manning (http://rowanmanning.com/)",
+
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/rowanmanning/pacer.git"
+    },
+    "homepage": "https://github.com/rowanmanning/pacer",
+    "bugs": "https://github.com/rowanmanning/pacer/issues",
+    "license": "MIT",
+
+    "engines": {
+        "node": ">=0.10"
+    },
+    "dependencies": {
+        "redis": "~0.12",
+        "underscore": "~1.8"
+    },
+    "devDependencies": {
+        "connect": "~3.3",
+        "jshint": "~2.6",
+        "mocha": "~2.2",
+        "mockery": "~1.4",
+        "proclaim": "~3.2",
+        "sinon": "~1.14"
+    },
+
+    "main": "./lib/pacer.js",
+    "scripts": {
+        "test": "make ci"
+    }
+}
