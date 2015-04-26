@@ -4,7 +4,6 @@
 
 var assert = require('proclaim');
 var mockery = require('mockery');
-var sinon = require('sinon');
 
 describe('lib/pacer', function () {
     var createPacer, redis, underscore;
@@ -147,7 +146,7 @@ describe('lib/pacer', function () {
                 });
 
                 it('should call Redis multi functions in order', function () {
-                    sinon.assert.callOrder(
+                    assert.callOrder(
                         redisClient.multi,
                         multi.set,
                         multi.decr,
@@ -206,7 +205,7 @@ describe('lib/pacer', function () {
                 });
 
                 it('should call Redis multi functions in order', function () {
-                    sinon.assert.callOrder(
+                    assert.callOrder(
                         redisClient.multi,
                         multi.set,
                         multi.decr,
@@ -397,7 +396,7 @@ describe('lib/pacer', function () {
                 });
 
                 it('should call Redis multi functions in order', function () {
-                    sinon.assert.callOrder(
+                    assert.callOrder(
                         redisClient.multi,
                         multi.set,
                         multi.get,
@@ -456,7 +455,7 @@ describe('lib/pacer', function () {
                 });
 
                 it('should call Redis multi functions in order', function () {
-                    sinon.assert.callOrder(
+                    assert.callOrder(
                         redisClient.multi,
                         multi.set,
                         multi.get,
