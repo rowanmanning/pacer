@@ -21,10 +21,10 @@ app.use(function (request, response) {
         return response.end('Not Found');
     }
 
-    // Consume a rate-limit token for the client IP
-    pacer.consume(request.connection.remoteAddress, function (info) {
+    // Consume a rate-limit token for the request IP
+    pacer.consume(request.connection.remoteAddress, function (consumer) {
         // Output the rate-limiting details
-        response.end(JSON.stringify(info, null, 4));
+        response.end(JSON.stringify(consumer, null, 4));
     });
 
 });

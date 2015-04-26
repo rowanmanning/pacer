@@ -21,21 +21,21 @@ app.use(function (request, response) {
         return response.end('Not Found');
     }
 
-    // Create client information
-    var client = {
+    // Create consumer information
+    var consumer = {
         id: request.connection.remoteAddress + ', ' + request.headers['user-agent'],
     };
 
     // Give Google Chrome users a better rate limit and reset time
     if (request.headers['user-agent'].indexOf('Chrome/') !== -1) {
-        client.limit = 10;  // Allow 10 requests...
-        client.reset = 5;   // ...every 5 seconds
+        consumer.limit = 10;  // Allow 10 requests...
+        consumer.reset = 5;   // ...every 5 seconds
     }
 
-    // Consume a rate-limit token for the client
-    pacer.consume(client, function (info) {
+    // Consume a rate-limit token for the consumer
+    pacer.consume(consumer, function (consumer) {
         // Output the rate-limiting details
-        response.end(JSON.stringify(info, null, 4));
+        response.end(JSON.stringify(consumer, null, 4));
     });
 
 });
