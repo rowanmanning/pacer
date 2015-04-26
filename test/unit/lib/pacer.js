@@ -103,12 +103,12 @@ describe('lib/pacer', function () {
                 assert.isFunction(pacer.consume);
             });
 
-            describe('.consume() with a string client', function () {
-                var client, multi;
+            describe('.consume() with a string consumer', function () {
+                var consumer, multi;
 
                 beforeEach(function (done) {
-                    client = 'foo';
-                    pacer.consume(client, function () {
+                    consumer = 'foo';
+                    pacer.consume(consumer, function () {
                         multi = redisClient.multi.firstCall.returnValue;
                         done();
                     });
@@ -118,10 +118,10 @@ describe('lib/pacer', function () {
                     assert.isTrue(redisClient.multi.calledOnce);
                 });
 
-                it('should SET the client key in Redis', function () {
+                it('should SET the consumer key in Redis', function () {
                     assert.isTrue(multi.set.calledOnce);
                     assert.deepEqual(multi.set.firstCall.args[0], [
-                        client,
+                        consumer,
                         options.limit,
                         'NX',
                         'EX',
@@ -129,16 +129,16 @@ describe('lib/pacer', function () {
                     ]);
                 });
 
-                it('should DECR the client key in Redis', function () {
-                    assert.isTrue(multi.decr.withArgs(client).calledOnce);
+                it('should DECR the consumer key in Redis', function () {
+                    assert.isTrue(multi.decr.withArgs(consumer).calledOnce);
                 });
 
-                it('should not GET the client key in Redis', function () {
+                it('should not GET the consumer key in Redis', function () {
                     assert.isFalse(multi.get.called);
                 });
 
-                it('should get the TTL of the client key in Redis', function () {
-                    assert.isTrue(multi.ttl.withArgs(client).calledOnce);
+                it('should get the TTL of the consumer key in Redis', function () {
+                    assert.isTrue(multi.ttl.withArgs(consumer).calledOnce);
                 });
 
                 it('should execute the multi command with a callback', function () {
@@ -158,16 +158,16 @@ describe('lib/pacer', function () {
 
             });
 
-            describe('.consume() with an object client', function () {
-                var client, multi;
+            describe('.consume() with an object consumer', function () {
+                var consumer, multi;
 
                 beforeEach(function (done) {
-                    client = {
+                    consumer = {
                         id: 'foo',
                         limit: 1234,
                         reset: 5678
                     };
-                    pacer.consume(client, function () {
+                    pacer.consume(consumer, function () {
                         multi = redisClient.multi.firstCall.returnValue;
                         done();
                     });
@@ -177,27 +177,27 @@ describe('lib/pacer', function () {
                     assert.isTrue(redisClient.multi.calledOnce);
                 });
 
-                it('should SET the client key in Redis', function () {
+                it('should SET the consumer key in Redis', function () {
                     assert.isTrue(multi.set.calledOnce);
                     assert.deepEqual(multi.set.firstCall.args[0], [
-                        client.id,
-                        client.limit,
+                        consumer.id,
+                        consumer.limit,
                         'NX',
                         'EX',
-                        client.reset
+                        consumer.reset
                     ]);
                 });
 
-                it('should DECR the client key in Redis', function () {
-                    assert.isTrue(multi.decr.withArgs(client.id).calledOnce);
+                it('should DECR the consumer key in Redis', function () {
+                    assert.isTrue(multi.decr.withArgs(consumer.id).calledOnce);
                 });
 
-                it('should not GET the client key in Redis', function () {
+                it('should not GET the consumer key in Redis', function () {
                     assert.isFalse(multi.get.called);
                 });
 
-                it('should get the TTL of the client key in Redis', function () {
-                    assert.isTrue(multi.ttl.withArgs(client.id).calledOnce);
+                it('should get the TTL of the consumer key in Redis', function () {
+                    assert.isTrue(multi.ttl.withArgs(consumer.id).calledOnce);
                 });
 
                 it('should execute the multi command with a callback', function () {
@@ -225,7 +225,7 @@ describe('lib/pacer', function () {
                 });
 
                 describe('when there are tokens remaining', function () {
-                    var info, resultHandler;
+                    var consumer, resultHandler;
 
                     beforeEach(function (done) {
                         exec.yields(null, [
@@ -234,25 +234,25 @@ describe('lib/pacer', function () {
                             '345' // reset
                         ]);
                         pacer.consume('foo', function (result) {
-                            info = result;
+                            consumer = result;
                             resultHandler = exec.firstCall.args[0];
                             done();
                         });
                     });
 
-                    it('should callback with the expected info object', function () {
-                        assert.strictEqual(info.id, 'foo');
-                        assert.strictEqual(info.limit, 100);
-                        assert.strictEqual(info.reset, 345);
-                        assert.strictEqual(info.remaining, 12);
-                        assert.isNull(info.error);
-                        assert.isTrue(info.allowed);
+                    it('should callback with the expected consumer object', function () {
+                        assert.strictEqual(consumer.id, 'foo');
+                        assert.strictEqual(consumer.limit, 100);
+                        assert.strictEqual(consumer.reset, 345);
+                        assert.strictEqual(consumer.remaining, 12);
+                        assert.isNull(consumer.error);
+                        assert.isTrue(consumer.allowed);
                     });
 
                 });
 
                 describe('when no more tokens are remaining', function () {
-                    var info, resultHandler;
+                    var consumer, resultHandler;
 
                     beforeEach(function (done) {
                         exec.yields(null, [
@@ -260,22 +260,22 @@ describe('lib/pacer', function () {
                             '0' // remaining
                         ]);
                         pacer.consume('foo', function (result) {
-                            info = result;
+                            consumer = result;
                             resultHandler = exec.firstCall.args[0];
                             done();
                         });
                     });
 
-                    it('should callback with the expected info object', function () {
-                        assert.strictEqual(info.remaining, 0);
-                        assert.isNull(info.error);
-                        assert.isFalse(info.allowed);
+                    it('should callback with the expected consumer object', function () {
+                        assert.strictEqual(consumer.remaining, 0);
+                        assert.isNull(consumer.error);
+                        assert.isFalse(consumer.allowed);
                     });
 
                 });
 
                 describe('when remaining tokens are negative', function () {
-                    var info, resultHandler;
+                    var consumer, resultHandler;
 
                     beforeEach(function (done) {
                         exec.yields(null, [
@@ -283,46 +283,46 @@ describe('lib/pacer', function () {
                             '-1' // remaining
                         ]);
                         pacer.consume('foo', function (result) {
-                            info = result;
+                            consumer = result;
                             resultHandler = exec.firstCall.args[0];
                             done();
                         });
                     });
 
-                    it('should callback with the expected info object', function () {
-                        assert.strictEqual(info.remaining, 0);
-                        assert.isNull(info.error);
-                        assert.isFalse(info.allowed);
+                    it('should callback with the expected consumer object', function () {
+                        assert.strictEqual(consumer.remaining, 0);
+                        assert.isNull(consumer.error);
+                        assert.isFalse(consumer.allowed);
                     });
 
                 });
 
                 describe('when the Redis query errors and `options.allowOnError` is `true`', function () {
-                    var error, info, resultHandler;
+                    var error, consumer, resultHandler;
 
                     beforeEach(function (done) {
                         error = new Error('...');
                         exec.yields(error, null);
                         pacer.consume('foo', function (result) {
-                            info = result;
+                            consumer = result;
                             resultHandler = exec.firstCall.args[0];
                             done();
                         });
                     });
 
-                    it('should callback with the expected info object', function () {
-                        assert.strictEqual(info.id, 'foo');
-                        assert.strictEqual(info.limit, 100);
-                        assert.strictEqual(info.reset, 0);
-                        assert.strictEqual(info.remaining, 100);
-                        assert.strictEqual(info.error, error);
-                        assert.isTrue(info.allowed);
+                    it('should callback with the expected consumer object', function () {
+                        assert.strictEqual(consumer.id, 'foo');
+                        assert.strictEqual(consumer.limit, 100);
+                        assert.strictEqual(consumer.reset, 0);
+                        assert.strictEqual(consumer.remaining, 100);
+                        assert.strictEqual(consumer.error, error);
+                        assert.isTrue(consumer.allowed);
                     });
 
                 });
 
                 describe('when the Redis query errors and `options.allowOnError` is `false`', function () {
-                    var error, info, resultHandler;
+                    var error, consumer, resultHandler;
 
                     beforeEach(function (done) {
                         error = new Error('...');
@@ -330,19 +330,19 @@ describe('lib/pacer', function () {
                         options.allowOnError = false;
                         pacer = createPacer(options);
                         pacer.consume('foo', function (result) {
-                            info = result;
+                            consumer = result;
                             resultHandler = exec.firstCall.args[0];
                             done();
                         });
                     });
 
-                    it('should callback with the expected info object', function () {
-                        assert.strictEqual(info.id, 'foo');
-                        assert.strictEqual(info.limit, 100);
-                        assert.strictEqual(info.reset, 0);
-                        assert.strictEqual(info.remaining, 0);
-                        assert.strictEqual(info.error, error);
-                        assert.isFalse(info.allowed);
+                    it('should callback with the expected consumer object', function () {
+                        assert.strictEqual(consumer.id, 'foo');
+                        assert.strictEqual(consumer.limit, 100);
+                        assert.strictEqual(consumer.reset, 0);
+                        assert.strictEqual(consumer.remaining, 0);
+                        assert.strictEqual(consumer.error, error);
+                        assert.isFalse(consumer.allowed);
                     });
 
                 });
@@ -353,12 +353,12 @@ describe('lib/pacer', function () {
                 assert.isFunction(pacer.query);
             });
 
-            describe('.query() with a string client', function () {
-                var client, multi;
+            describe('.query() with a string consumer', function () {
+                var consumer, multi;
 
                 beforeEach(function (done) {
-                    client = 'foo';
-                    pacer.query(client, function () {
+                    consumer = 'foo';
+                    pacer.query(consumer, function () {
                         multi = redisClient.multi.firstCall.returnValue;
                         done();
                     });
@@ -368,10 +368,10 @@ describe('lib/pacer', function () {
                     assert.isTrue(redisClient.multi.calledOnce);
                 });
 
-                it('should SET the client key in Redis', function () {
+                it('should SET the consumer key in Redis', function () {
                     assert.isTrue(multi.set.calledOnce);
                     assert.deepEqual(multi.set.firstCall.args[0], [
-                        client,
+                        consumer,
                         options.limit,
                         'NX',
                         'EX',
@@ -379,16 +379,16 @@ describe('lib/pacer', function () {
                     ]);
                 });
 
-                it('should GET the client key in Redis', function () {
-                    assert.isTrue(multi.get.withArgs(client).calledOnce);
+                it('should GET the consumer key in Redis', function () {
+                    assert.isTrue(multi.get.withArgs(consumer).calledOnce);
                 });
 
-                it('should not DECR the client key in Redis', function () {
+                it('should not DECR the consumer key in Redis', function () {
                     assert.isFalse(multi.decr.called);
                 });
 
-                it('should get the TTL of the client key in Redis', function () {
-                    assert.isTrue(multi.ttl.withArgs(client).calledOnce);
+                it('should get the TTL of the consumer key in Redis', function () {
+                    assert.isTrue(multi.ttl.withArgs(consumer).calledOnce);
                 });
 
                 it('should execute the multi command with a callback', function () {
@@ -408,16 +408,16 @@ describe('lib/pacer', function () {
 
             });
 
-            describe('.query() with an object client', function () {
-                var client, multi;
+            describe('.query() with an object consumer', function () {
+                var consumer, multi;
 
                 beforeEach(function (done) {
-                    client = {
+                    consumer = {
                         id: 'foo',
                         limit: 1234,
                         reset: 5678
                     };
-                    pacer.query(client, function () {
+                    pacer.query(consumer, function () {
                         multi = redisClient.multi.firstCall.returnValue;
                         done();
                     });
@@ -427,27 +427,27 @@ describe('lib/pacer', function () {
                     assert.isTrue(redisClient.multi.calledOnce);
                 });
 
-                it('should SET the client key in Redis', function () {
+                it('should SET the consumer key in Redis', function () {
                     assert.isTrue(multi.set.calledOnce);
                     assert.deepEqual(multi.set.firstCall.args[0], [
-                        client.id,
-                        client.limit,
+                        consumer.id,
+                        consumer.limit,
                         'NX',
                         'EX',
-                        client.reset
+                        consumer.reset
                     ]);
                 });
 
-                it('should GET the client key in Redis', function () {
-                    assert.isTrue(multi.get.withArgs(client.id).calledOnce);
+                it('should GET the consumer key in Redis', function () {
+                    assert.isTrue(multi.get.withArgs(consumer.id).calledOnce);
                 });
 
-                it('should not DECR the client key in Redis', function () {
+                it('should not DECR the consumer key in Redis', function () {
                     assert.isFalse(multi.decr.called);
                 });
 
-                it('should get the TTL of the client key in Redis', function () {
-                    assert.isTrue(multi.ttl.withArgs(client.id).calledOnce);
+                it('should get the TTL of the consumer key in Redis', function () {
+                    assert.isTrue(multi.ttl.withArgs(consumer.id).calledOnce);
                 });
 
                 it('should execute the multi command with a callback', function () {
@@ -475,7 +475,7 @@ describe('lib/pacer', function () {
                 });
 
                 describe('when there are tokens remaining', function () {
-                    var info, resultHandler;
+                    var consumer, resultHandler;
 
                     beforeEach(function (done) {
                         exec.yields(null, [
@@ -484,25 +484,25 @@ describe('lib/pacer', function () {
                             '345' // reset
                         ]);
                         pacer.query('foo', function (result) {
-                            info = result;
+                            consumer = result;
                             resultHandler = exec.firstCall.args[0];
                             done();
                         });
                     });
 
-                    it('should callback with the expected info object', function () {
-                        assert.strictEqual(info.id, 'foo');
-                        assert.strictEqual(info.limit, 100);
-                        assert.strictEqual(info.reset, 345);
-                        assert.strictEqual(info.remaining, 12);
-                        assert.isNull(info.error);
-                        assert.isTrue(info.allowed);
+                    it('should callback with the expected consumer object', function () {
+                        assert.strictEqual(consumer.id, 'foo');
+                        assert.strictEqual(consumer.limit, 100);
+                        assert.strictEqual(consumer.reset, 345);
+                        assert.strictEqual(consumer.remaining, 12);
+                        assert.isNull(consumer.error);
+                        assert.isTrue(consumer.allowed);
                     });
 
                 });
 
                 describe('when no more tokens are remaining', function () {
-                    var info, resultHandler;
+                    var consumer, resultHandler;
 
                     beforeEach(function (done) {
                         exec.yields(null, [
@@ -510,22 +510,22 @@ describe('lib/pacer', function () {
                             '0' // remaining
                         ]);
                         pacer.query('foo', function (result) {
-                            info = result;
+                            consumer = result;
                             resultHandler = exec.firstCall.args[0];
                             done();
                         });
                     });
 
-                    it('should callback with the expected info object', function () {
-                        assert.strictEqual(info.remaining, 0);
-                        assert.isNull(info.error);
-                        assert.isFalse(info.allowed);
+                    it('should callback with the expected consumer object', function () {
+                        assert.strictEqual(consumer.remaining, 0);
+                        assert.isNull(consumer.error);
+                        assert.isFalse(consumer.allowed);
                     });
 
                 });
 
                 describe('when remaining tokens are negative', function () {
-                    var info, resultHandler;
+                    var consumer, resultHandler;
 
                     beforeEach(function (done) {
                         exec.yields(null, [
@@ -533,46 +533,46 @@ describe('lib/pacer', function () {
                             '-1' // remaining
                         ]);
                         pacer.query('foo', function (result) {
-                            info = result;
+                            consumer = result;
                             resultHandler = exec.firstCall.args[0];
                             done();
                         });
                     });
 
-                    it('should callback with the expected info object', function () {
-                        assert.strictEqual(info.remaining, 0);
-                        assert.isNull(info.error);
-                        assert.isFalse(info.allowed);
+                    it('should callback with the expected consumer object', function () {
+                        assert.strictEqual(consumer.remaining, 0);
+                        assert.isNull(consumer.error);
+                        assert.isFalse(consumer.allowed);
                     });
 
                 });
 
                 describe('when the Redis query errors and `options.allowOnError` is `true`', function () {
-                    var error, info, resultHandler;
+                    var error, consumer, resultHandler;
 
                     beforeEach(function (done) {
                         error = new Error('...');
                         exec.yields(error, null);
                         pacer.query('foo', function (result) {
-                            info = result;
+                            consumer = result;
                             resultHandler = exec.firstCall.args[0];
                             done();
                         });
                     });
 
-                    it('should callback with the expected info object', function () {
-                        assert.strictEqual(info.id, 'foo');
-                        assert.strictEqual(info.limit, 100);
-                        assert.strictEqual(info.reset, 0);
-                        assert.strictEqual(info.remaining, 100);
-                        assert.strictEqual(info.error, error);
-                        assert.isTrue(info.allowed);
+                    it('should callback with the expected consumer object', function () {
+                        assert.strictEqual(consumer.id, 'foo');
+                        assert.strictEqual(consumer.limit, 100);
+                        assert.strictEqual(consumer.reset, 0);
+                        assert.strictEqual(consumer.remaining, 100);
+                        assert.strictEqual(consumer.error, error);
+                        assert.isTrue(consumer.allowed);
                     });
 
                 });
 
                 describe('when the Redis query errors and `options.allowOnError` is `false`', function () {
-                    var error, info, resultHandler;
+                    var error, consumer, resultHandler;
 
                     beforeEach(function (done) {
                         error = new Error('...');
@@ -580,19 +580,19 @@ describe('lib/pacer', function () {
                         options.allowOnError = false;
                         pacer = createPacer(options);
                         pacer.query('foo', function (result) {
-                            info = result;
+                            consumer = result;
                             resultHandler = exec.firstCall.args[0];
                             done();
                         });
                     });
 
-                    it('should callback with the expected info object', function () {
-                        assert.strictEqual(info.id, 'foo');
-                        assert.strictEqual(info.limit, 100);
-                        assert.strictEqual(info.reset, 0);
-                        assert.strictEqual(info.remaining, 0);
-                        assert.strictEqual(info.error, error);
-                        assert.isFalse(info.allowed);
+                    it('should callback with the expected consumer object', function () {
+                        assert.strictEqual(consumer.id, 'foo');
+                        assert.strictEqual(consumer.limit, 100);
+                        assert.strictEqual(consumer.reset, 0);
+                        assert.strictEqual(consumer.remaining, 0);
+                        assert.strictEqual(consumer.error, error);
+                        assert.isFalse(consumer.allowed);
                     });
 
                 });
