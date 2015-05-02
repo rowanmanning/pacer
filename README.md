@@ -2,7 +2,7 @@
 Pacer
 =====
 
-A flexible Redis-based rate-limiter for Node.js.
+A flexible, fault-tolerant, Redis-based rate-limiter for Node.js.
 
 [![NPM version][shield-npm]][info-npm]
 [![Node.js version support][shield-node]][info-node]
@@ -22,7 +22,7 @@ pacer.consume('consumer-identifier', function (consumer) {
     // consumer == {
     //     id: 'consumer-identifier',
     //     limit: 5,
-    //     remaining: 5,
+    //     remaining: 4,
     //     reset: 10,
     //     allowed: true
     // }
@@ -54,7 +54,66 @@ npm install pacer
 Getting Started
 ---------------
 
-TODO
+Require in and Pacer:
+
+```js
+var createPacer = require('pacer');
+```
+
+Create a Pacer instance, passing in some [options](#options):
+
+```js
+var pacer = createPacer({
+    limit: 5,  // Allow 5 requests...
+    reset: 10  // ...every 10 seconds
+});
+```
+
+Consume a token for the `'foo'` consumer. The consumer identifier can be any string you like, for example the request IP, or a username.
+
+```js
+pacer.consume('foo', function (consumer) {
+    // consumer == {
+    //     id: 'foo',
+    //     limit: 5,
+    //     remaining: 4,
+    //     reset: 10,
+    //     allowed: true
+    // }
+});
+```
+
+Consumer can also be an object, allowing you to specify a custom limit and reset time for them. This could be used to provide different tiers of rate limiting depending on the user that is accessing your application.
+
+```js
+pacer.consume({
+    id: 'foo',
+    limit: 10,  // Allow 10 requests...
+    reset: 5    // ...every 5 seconds
+}, function (consumer) {
+    // consumer == {
+    //     id: 'consumer-identifier',
+    //     limit: 10,
+    //     remaining: 9,
+    //     reset: 5,
+    //     allowed: true
+    // }
+});
+```
+
+If you don't wish to consume a token but want to query how many tokens a consumer has remaining, you can use the `query` method. This works with string or object consumers.
+
+```js
+pacer.query('foo', function (consumer) {
+    // consumer == {
+    //     id: 'foo',
+    //     limit: 5,
+    //     remaining: 5,
+    //     reset: 10,
+    //     allowed: true
+    // }
+});
+```
 
 
 Usage
