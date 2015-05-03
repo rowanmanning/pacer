@@ -23,7 +23,7 @@
     },
     "devDependencies": {
         "connect": "~3.3",
-        "jshint": "~2.6",
+        "jshint": "~2.7",
         "mocha": "~2.2",
         "mockery": "~1.4",
         "proclaim": "~3.2",
