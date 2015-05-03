@@ -2,7 +2,7 @@
     "name": "pacer",
     "version": "0.0.0",
 
-    "description": "A flexible Redis-based rate-limiter",
+    "description": "A flexible, fault-tolerant, Redis-based rate-limiter",
     "keywords": [ "limit", "pace", "rate" ],
     "author": "Rowan Manning (http://rowanmanning.com/)",
 
