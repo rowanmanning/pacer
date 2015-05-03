@@ -119,7 +119,91 @@ pacer.query('foo', function (consumer) {
 Usage
 -----
 
-TODO
+Create a pacer with the passed in [`options`](#options) object:
+
+```js
+var pacer = createPacer({ /* ... */ });
+```
+
+### Consuming
+
+#### `pacer.consume(consumerId, callback)`
+
+Consume a token for a specified consumer.
+
+```js
+consumerId = String
+callback = function (consumer) {
+    consumer = {
+        id: String,
+        limit: Number,
+        remaining: Number,
+        reset: Number,
+        allowed: Boolean
+    }
+}
+```
+
+#### `pacer.consume(consumer, callback)`
+
+Consume a token for a specified consumer using a custom limit and reset time.
+
+```js
+consumer = {
+    id: String,
+    limit: Number,
+    reset: Number
+}
+callback = function (consumer) {
+    consumer = {
+        id: String,
+        limit: Number,
+        remaining: Number,
+        reset: Number,
+        allowed: Boolean
+    }
+}
+```
+
+### Querying
+
+#### `pacer.query(consumerId, callback)`
+
+Query the tokens for a specified consumer.
+
+```js
+consumerId = String
+callback = function (consumer) {
+    consumer = {
+        id: String,
+        limit: Number,
+        remaining: Number,
+        reset: Number,
+        allowed: Boolean
+    }
+}
+```
+
+#### `pacer.query(consumer, callback)`
+
+Query the tokens for a specified consumer using a custom limit and reset time.
+
+```js
+consumer = {
+    id: String,
+    limit: Number,
+    reset: Number
+}
+callback = function (consumer) {
+    consumer = {
+        id: String,
+        limit: Number,
+        remaining: Number,
+        reset: Number,
+        allowed: Boolean
+    }
+}
+```
 
 
 Options
