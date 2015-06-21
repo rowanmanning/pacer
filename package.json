@@ -22,12 +22,12 @@
         "underscore": "~1.8"
     },
     "devDependencies": {
-        "connect": "~3.3",
-        "jshint": "~2.7",
-        "mocha": "~2.2",
+        "connect": "^3",
+        "jshint": "^2",
+        "mocha": "^2",
         "mockery": "~1.4",
-        "proclaim": "~3.2",
-        "sinon": "~1.14"
+        "proclaim": "^3",
+        "sinon": "^1"
     },
 
     "main": "./lib/pacer.js",
