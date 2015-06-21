@@ -4,8 +4,8 @@ var createPacer = require('../..');
 
 // Create a pacer
 var pacer = createPacer({
-    limit: 5,  // Allow 5 requests...
-    reset: 10  // ...every 10 seconds
+    limit: 5, // Allow 5 requests...
+    reset: 10 // ...every 10 seconds
 });
 
 // Require an argument

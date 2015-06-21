@@ -1,5 +1,5 @@
-/* jshint maxstatements: false, maxlen: false */
-/* global afterEach, beforeEach */
+// jshint maxstatements: false
+// jscs:disable disallowMultipleVarDecl, maximumLineLength
 'use strict';
 
 var assert = require('proclaim');

@@ -8,8 +8,8 @@ var app = connect();
 
 // Create a pacer
 var pacer = createPacer({
-    limit: 5,  // Allow 5 requests...
-    reset: 10  // ...every 10 seconds
+    limit: 5, // Allow 5 requests...
+    reset: 10 // ...every 10 seconds
 });
 
 // Add a request handler
@@ -23,13 +23,13 @@ app.use(function (request, response) {
 
     // Create consumer information
     var consumer = {
-        id: request.connection.remoteAddress + ', ' + request.headers['user-agent'],
+        id: request.connection.remoteAddress + ', ' + request.headers['user-agent']
     };
 
     // Give Google Chrome users a better rate limit and reset time
     if (request.headers['user-agent'].indexOf('Chrome/') !== -1) {
-        consumer.limit = 10;  // Allow 10 requests...
-        consumer.reset = 5;   // ...every 5 seconds
+        consumer.limit = 10; // Allow 10 requests...
+        consumer.reset = 5; // ...every 5 seconds
     }
 
     // Consume a rate-limit token for the consumer

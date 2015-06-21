@@ -10,7 +10,7 @@ module.exports = {
             exec: sinon.stub().yields(),
             get: sinon.spy(),
             set: sinon.spy(),
-            ttl: sinon.spy(),
+            ttl: sinon.spy()
         })
     })
 };
