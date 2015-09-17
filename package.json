@@ -18,12 +18,12 @@
         "node": ">=0.10"
     },
     "dependencies": {
-        "redis": "~0.12",
+        "redis": "~1.0",
         "underscore": "~1.8"
     },
     "devDependencies": {
         "connect": "^3",
-        "jscs": "^1",
+        "jscs": "^2",
         "jshint": "^2",
         "mocha": "^2",
         "mockery": "~1.4",
