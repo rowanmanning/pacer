@@ -23,6 +23,7 @@
     },
     "devDependencies": {
         "connect": "^3",
+        "istanbul": "~0.3",
         "jscs": "^2",
         "jshint": "^2",
         "mocha": "^2",

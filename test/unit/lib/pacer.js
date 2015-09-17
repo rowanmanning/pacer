@@ -216,6 +216,48 @@ describe('lib/pacer', function () {
 
             });
 
+            describe('.consume() with an object consumer that has no defined limit', function () {
+                var consumer, multi;
+
+                beforeEach(function (done) {
+                    consumer = {
+                        id: 'foo',
+                        reset: 5678
+                    };
+                    pacer.consume(consumer, function () {
+                        multi = redisClient.multi.firstCall.returnValue;
+                        done();
+                    });
+                });
+
+                it('should SET the consumer key in Redis with the default limit', function () {
+                    assert.isTrue(multi.set.calledOnce);
+                    assert.strictEqual(multi.set.firstCall.args[0][1], options.limit);
+                });
+
+            });
+
+            describe('.consume() with an object consumer that has no defined reset', function () {
+                var consumer, multi;
+
+                beforeEach(function (done) {
+                    consumer = {
+                        id: 'foo',
+                        limit: 1234
+                    };
+                    pacer.consume(consumer, function () {
+                        multi = redisClient.multi.firstCall.returnValue;
+                        done();
+                    });
+                });
+
+                it('should SET the consumer key in Redis with the default reset', function () {
+                    assert.isTrue(multi.set.calledOnce);
+                    assert.strictEqual(multi.set.firstCall.args[0][4], options.reset);
+                });
+
+            });
+
             describe('.consume() result handler', function () {
                 var exec;
 
