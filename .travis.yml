@@ -1,10 +1,23 @@
 
-# Language/versions
+# Build matrix
 language: node_js
-node_js:
-  - "4"
-  - "0.12"
-  - "0.10"
+matrix:
+  include:
+
+    # Run linter once
+    - node_js: '4'
+      env: LINT=true
+
+    # Run tests
+    - node_js: '0.10'
+    - node_js: '0.12'
+    - node_js: '4'
+
+# Restrict builds on branches
+branches:
+  only:
+    - master
+    - /^\d+\.\d+\.\d+$/
 
 # Before install
 before_install:
@@ -12,5 +25,6 @@ before_install:
 
 # Build script
 script:
-  - make ci
-  - cat ./coverage/lcov.info | ./node_modules/.bin/coveralls
+  - 'if [ $LINT ]; then make lint; fi'
+  - 'if [ ! $LINT ]; then make test; fi'
+  - 'if [ ! $LINT ]; then cat ./coverage/lcov.info | ./node_modules/.bin/coveralls; fi'
