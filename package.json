@@ -18,12 +18,12 @@
         "node": ">=0.10"
     },
     "dependencies": {
-        "redis": "~1.0",
+        "redis": "^2",
         "underscore": "~1.8"
     },
     "devDependencies": {
         "connect": "^3",
-        "istanbul": "~0.3",
+        "istanbul": "^0.4",
         "jscs": "^2",
         "jshint": "^2",
         "mocha": "^2",
