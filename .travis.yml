@@ -27,4 +27,4 @@ before_install:
 script:
   - 'if [ $LINT ]; then make verify; fi'
   - 'if [ ! $LINT ]; then make test; fi'
-  - 'if [ ! $LINT ]; then cat ./coverage/lcov.info | ./node_modules/.bin/coveralls; fi'
+  - 'if [ ! $LINT ]; then cat ./coverage/lcov.info | ./node_modules/.bin/coveralls || true; fi'
