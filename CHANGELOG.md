@@ -1,5 +1,5 @@
 
-# History
+# Changelog
 
 ## 0.1.2 pre-release (2015-09-17)
 
