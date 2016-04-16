@@ -1,6 +1,12 @@
 
 # Changelog
 
+## 0.2.0 pre-release (2016-04-16)
+
+  * Add Node.js 5.x support
+  * Update dependencies
+    * redis: `~1.0` to `^2`
+
 ## 0.1.2 pre-release (2015-09-17)
 
   * Add Node.js 4.x support
