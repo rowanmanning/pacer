@@ -1,6 +1,6 @@
 {
     "name": "pacer",
-    "version": "0.2.0",
+    "version": "0.2.1",
 
     "description": "A flexible, fault-tolerant, Redis-based rate-limiter",
     "keywords": [ "limit", "pace", "rate" ],
