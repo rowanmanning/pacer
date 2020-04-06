@@ -4,6 +4,8 @@ Pacer
 
 A flexible, fault-tolerant, Redis-based rate-limiter for Node.js.
 
+**⚠️ NOTE: This project is no longer being maintained. If you're interested in taking over maintenance, please contact me.**
+
 [![NPM version][shield-npm]][info-npm]
 [![Node.js version support][shield-node]][info-node]
 [![Build status][shield-build]][info-build]
