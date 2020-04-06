@@ -19,7 +19,7 @@
     "node": ">=0.10"
   },
   "dependencies": {
-    "redis": "^2",
+    "redis": "^3",
     "underscore": "~1.8"
   },
   "devDependencies": {
