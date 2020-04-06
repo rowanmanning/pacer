@@ -25,7 +25,7 @@
   "devDependencies": {
     "connect": "^3",
     "istanbul": "^0.4",
-    "jscs": "^2",
+    "jscs": "^3",
     "jshint": "^2",
     "mocha": "^2",
     "mockery": "~1.4",
