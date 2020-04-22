@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "redis": "^2",
-    "underscore": "~1.8"
+    "underscore": "~1.10"
   },
   "devDependencies": {
     "connect": "^3",
